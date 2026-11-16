@@ -7,12 +7,12 @@ public class Eg10bArrays {
         System.out.print("Digite o número correspondente ao método desejado: ");
         int opcao = sc.nextInt();
         switch (opcao) {
-            case 1 -> SalaBidimensional();
-            case 2 -> SalaTridimensional();
+            case 1 -> salaBidimensional();
+            case 2 -> salaTridimensional();
         }
     }
 
-    public static void SalaBidimensional() {
+    public static void salaBidimensional() {
         Random rand = new Random();
         double[][] notas = new double[8][4]; // 8 alunos e 4 notas cada
         // Preenchendo as notas (i é alunos e j é as notas)
@@ -34,7 +34,7 @@ public class Eg10bArrays {
         }       
     }
 
-    public static void SalaTridimensional() {
+    public static void salaTridimensional() {
         Random rand = new Random();
         double[][][] notas = new double[5][8][4]; // 5 salas com 8 alunos e 4 notas cada
         // Preenchendo as notas (geração com peso, e usando for-each pois aqui não precisamos dos indices)

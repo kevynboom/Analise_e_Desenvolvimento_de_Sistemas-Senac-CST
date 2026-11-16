@@ -6,15 +6,15 @@ public class Eg10aArrays {
         System.out.print("Digite o número correspondente ao método desejado: ");
         int opcao = sc.nextInt();
         switch (opcao) {
-            case 1 -> ArrayInt();
-            case 2 -> ForEach();
-            case 3 -> ArrayString();
-            case 4 -> Exercicio();
-            case 5 -> ArrayPredefinido();
+            case 1 -> arrayInt();
+            case 2 -> forEach();
+            case 3 -> arrayString();
+            case 4 -> exercicio();
+            case 5 -> arrayPredefinido();
         }
     }
 
-    public static void ArrayInt() {
+    public static void arrayInt() {
         int media = 0;
         int notas[] = new int[10]; // "[]"" no "int" = todas váriveis aqui são vetores || "[]"" no "notas" = somente notas é vetor
         for (int i = 0; i < notas.length; i++) {
@@ -29,7 +29,7 @@ public class Eg10aArrays {
         System.out.printf("A média da turma é: %2d", media);
     }
 
-    public static void ForEach() {
+    public static void forEach() {
         int media = 0;
         int notas[] = new int[10];
         for (int i = 0; i < notas.length; i++) {
@@ -46,7 +46,7 @@ public class Eg10aArrays {
         System.out.printf("A média da turma é: %2d", media);
     }
 
-    public static void ArrayString() {
+    public static void arrayString() {
         // Crie um algoritmo que pergunte a quantidade de palavras que serão digitadas, armazene-as em um array de Strings e exiba-as.
         int qtd;
         String palavras[] ; // Declarando "palavras" como array de String mas sem criar ele
@@ -62,7 +62,7 @@ public class Eg10aArrays {
         }
     }    
 
-    public static void Exercicio() {
+    public static void exercicio() {
         // Crie um algoritmo para receber os nomes e notas de cada aluno de uma turma e exibir as informações
         // A quantidade de alunos da turma deverá ser informada e não poderá ser maior que 50.
         // As notas serão números fracionários, de 0 a 10.
@@ -93,23 +93,23 @@ public class Eg10aArrays {
         }
     }
     // ------------------------------------------------------------------------
-    public static void ArrayPredefinido() {
+    public static void arrayPredefinido() {
         // Criando vetores com valores predefinidos
         int[] numeros = {12, 45, 7, 89, 23, 56, 31, 64, 18, 92};
         String[] nomes = {"Lucas", "Mariana", "Pedro", "Beatriz", "Gabriel", "Ana", "Rafael"};
         String[] dias = {"Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"};
 
-        System.out.println(ArrayMaior(numeros)); // Passando vetor como parametro para o metodo e o resultado disso sairá no print
-        System.out.println(ArrayMenor(numeros));
-        System.out.println(ArrayQtdPares(numeros));
-        System.out.println(ArrayQtdImpares(numeros)); // Ou "System.out.println((numeros.length - ArrayQtdPares(numeros)));" também funcionaria 
-        System.out.println(ArrayBuscarBoolean(nomes, "Ana"));
-        System.out.println(ArrayBuscarBoolean(dias, "Quarta"));
-        System.out.println(ArrayBuscarPosicao(nomes, "Ana"));
-        System.out.println(ArrayBuscarPosicao(dias, "Quarta"));
+        System.out.println(arrayMaior(numeros)); // Passando vetor como parametro para o metodo e o resultado disso sairá no print
+        System.out.println(arrayMenor(numeros));
+        System.out.println(arrayQtdPares(numeros));
+        System.out.println(arrayQtdImpares(numeros)); // Ou "System.out.println((numeros.length - arrayQtdPares(numeros)));" também funcionaria 
+        System.out.println(arrayBuscarBoolean(nomes, "Ana"));
+        System.out.println(arrayBuscarBoolean(dias, "Quarta"));
+        System.out.println(arrayBuscarPosicao(nomes, "Ana"));
+        System.out.println(arrayBuscarPosicao(dias, "Quarta"));
     }
 
-    public static int ArrayMaior(int[] array) {
+    public static int arrayMaior(int[] array) {
         int maior = array[0]; // A variavel precisa ser inicializada, então assume-se que o primeiro valor é o "maior" por hora
         // Percorrendo todo o array
         for (int i = 0; i < array.length; i++) {
@@ -120,7 +120,7 @@ public class Eg10aArrays {
         return maior;
     }
 
-    public static int ArrayMenor(int[] array) {
+    public static int arrayMenor(int[] array) {
         int menor = array[0];
         for (int i = 0; i < array.length; i++) {
             if (array[i] < menor) {
@@ -130,7 +130,7 @@ public class Eg10aArrays {
         return menor;
     }
 
-    public static int ArrayQtdPares(int[] array) {
+    public static int arrayQtdPares(int[] array) {
         int qtdPares = 0;
         for (int i = 0; i < array.length; i++) { // for (int numero : array)
             if (array[i] % 2 == 0){ // if (numero % 2 == 0)
@@ -140,11 +140,11 @@ public class Eg10aArrays {
         return qtdPares;
     }
 
-    public static int ArrayQtdImpares(int[] array) {
-        return array.length - ArrayQtdPares(array); // Reaproveitando o método anterior para verificar a qtd de impares
+    public static int arrayQtdImpares(int[] array) {
+        return array.length - arrayQtdPares(array); // Reaproveitando o método anterior para verificar a qtd de impares
     }
 
-    public static boolean ArrayBuscarBoolean(String[] array, String alvo) {
+    public static boolean arrayBuscarBoolean(String[] array, String alvo) {
         for (String s : array) {
             if (s.equals(alvo)) {
                 return true; // Se achar o alvo, retorna verdadeiro
@@ -153,7 +153,7 @@ public class Eg10aArrays {
         return false;
     }
 
-    public static int ArrayBuscarPosicao(String[] array, String alvo) {
+    public static int arrayBuscarPosicao(String[] array, String alvo) {
         for (int i = 0; i < array.length; i++) {
             if (array[i].equals(alvo)) {
                 return i; // Retorna a posição
