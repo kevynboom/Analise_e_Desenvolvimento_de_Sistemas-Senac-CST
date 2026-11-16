@@ -171,6 +171,7 @@ public class Eg11Exercicio {
 	* - Percentual de livros com mais de 100 empréstimos
      */
     public static void estatisticas() {
+        System.out.println("\n----- INICIANDO VERIFICAÇÃO E LISTAGEM DAS ESTATÍSTICAS -----");
         int maiorP = 0, menorP = 5000, totalE = 0, totalD = 0, qtdLivrosLocal = 0;
         double mediaAnos = 0, porcentagem;
         for (int i = 0; i < qtdLivros; i++) {
@@ -195,6 +196,10 @@ public class Eg11Exercicio {
         System.out.printf("Total de empréstimos:   %d\n", totalE);
         System.out.printf("Total de devoluções:    %d\n", totalD);
         System.out.printf("Livros com mais de 100 empréstimos: %d (%.2f%%)\n", qtdLivrosLocal, porcentagem);
+        System.out.println("\n----- VERIFICAÇÃO E LISTAGEM DAS ESTATÍSTICAS CONCLUÍDA -----");
+        System.out.println("Aperte Enter para continuar...");
+        sc.nextLine();
+        sc.nextLine();
     }
 
     /**
