@@ -146,7 +146,7 @@ public class Eg11Exercicio {
             media += qtdEmprestimos[i];
         }
         media /= qtdLivros;
-        System.out.printf("A média dos empréstimos é de %.2f e será usada como base para determinar quais livros serão mostrados...\n", media);
+        System.out.printf("\nA média dos empréstimos é de %.2f e será usada como base para determinar quais livros serão mostrados...\n", media);
         System.out.println("Pressione Enter para iniciar a listagem");
         sc.nextLine();
         sc.nextLine();
@@ -190,7 +190,7 @@ public class Eg11Exercicio {
         porcentagem = ((double) qtdLivrosLocal / qtdLivros) * 100; // "(double)" para forçar o Java a fazer uma divisão com decimais com aquele váriavel
         mediaAnos /= qtdLivros;
 
-        System.out.printf("Publicação mais antiga:  %d\n", menorP);
+        System.out.printf("\nPublicação mais antiga:  %d\n", menorP);
         System.out.printf("Publicação mais recente: %d\n", maiorP);
         System.out.printf("Média dos anos:          %.2f\n", mediaAnos);
         System.out.printf("Total de empréstimos:   %d\n", totalE);
@@ -206,7 +206,26 @@ public class Eg11Exercicio {
      * Função para buscar um livro pelo seu título e verificar se o mesmo existe
      */
     public static void buscarLivroTitulo() {
-        
+        System.out.println("\n----- INICIANDO BUSCA DE LIVRO VIA TÍTULO -----");
+        sc.nextLine();
+        boolean encontrado = false;
+        System.out.println("\nDigite o nome do livro no qual procura: ");
+        String busca = sc.nextLine();
+        for (int i = 0; i < qtdLivros; i++) {
+            if (busca.equalsIgnoreCase(nomeLivro[i])) {
+                System.out.println("Livro encontrado!\n");
+                System.out.printf("%-25s %-10s %-12s %-15s %-15s%n", "Nome do Livro", "Ano", "Páginas", "Empréstimos", "Devoluções");
+                System.out.printf("%-25s %-10d %-12d %-15d %-15d%n", nomeLivro[i], anoPublicacao[i], qtdPaginas[i], qtdEmprestimos[i], qtdDevolucoes[i]);
+                encontrado = true;
+                break;
+            } 
+        }
+        if (!encontrado) {
+            System.out.println("\nLivro não encontrado...");
+        }
+        System.out.println("\n----- BUSCA DE LIVRO VIA TÍTULO CONCLUÍDA -----");
+        System.out.println("Aperte Enter para continuar...");
+        sc.nextLine();
     }
 
     public static void main(String[] args) {
