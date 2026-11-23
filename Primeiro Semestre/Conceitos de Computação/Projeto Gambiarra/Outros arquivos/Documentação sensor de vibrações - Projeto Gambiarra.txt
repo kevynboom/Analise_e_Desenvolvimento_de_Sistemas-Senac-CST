@@ -1,0 +1,69 @@
+PROJETO GAMBIARRA
+SISTEMA DE DETECÇÃO DE VIBRAÇÕES
+
+Integrantes: Kevyn, Educiano, André e Antônio
+
+1. APRESENTAÇÃO
+O projeto consiste no desenvolvimento de um protótipo eletrônico capaz de identificar vibrações por meio de um sensor MPU6050 conectado a um microcontrolador ESP32. Ao reconhecer movimentos acima de limites previamente definidos no programa, o dispositivo aciona alertas visuais e sonoros em dois níveis de intensidade.
+A proposta é demonstrar, de forma prática, a aquisição e o processamento de dados de aceleração, bem como o acionamento de periféricos a partir de condições detectadas pelo sensor.
+
+2. MATERIAIS UTILIZADOS
+- 1 ESP32 genérico e cabo USB;
+- 1 módulo MPU6050 (acelerômetro e giroscópio de três eixos);
+- 1 buzzer passivo de 5 V;
+- 1 protoboard;
+- 1 LED vermelho;
+- 1 resistor de 220 Ω para o LED;
+- 7 fios jumper.
+
+3. COMPONENTES E SUAS FUNÇÕES
+- ESP32: é o microcontrolador responsável por executar o programa, receber os dados do sensor, realizar os cálculos e controlar os alertas.
+- MPU6050: módulo que reúne um acelerômetro e um giroscópio de três eixos. Neste projeto, são utilizadas as leituras do acelerômetro nos eixos X, Y e Z para identificar variações de movimento.
+- LED: fornece a indicação visual dos níveis de vibração. A velocidade de piscagem muda conforme o nível detectado.
+- Buzzer passivo: produz os sinais sonoros de inicialização, encerramento do alerta e alarme do nível mais intenso.
+- Protoboard e jumpers: permitem realizar as conexões elétricas entre o ESP32, o sensor e os componentes de sinalização, sem a necessidade de soldagem.
+- Resistor de 220 Ω: limita a corrente que atravessa o LED, ajudando a protegê-lo.
+
+4. FUNCIONAMENTO DO SISTEMA
+4.1. Inicialização
+Ao ser ligado, o ESP32 inicializa a comunicação I²C e configura o MPU6050. Em seguida, verifica se o sensor está respondendo. Caso a conexão não seja detectada, o programa informa o erro pelo Monitor Serial e interrompe a execução normal.
+Com o sensor conectado, o programa coleta 100 amostras iniciais para calcular uma referência de aceleração em cada eixo. Essa referência considera a posição em que o sensor está durante a inicialização e é subtraída das leituras posteriores.
+Durante os primeiros 3 segundos, o LED permanece aceso. Depois, ele apaga e o buzzer emite dois tons curtos. Esse sinal indica que a etapa de inicialização terminou e que o monitoramento está pronto para começar.
+
+4.2. Leitura e processamento das vibrações
+Durante a operação, o ESP32 lê continuamente os valores de aceleração dos eixos X, Y e Z do MPU6050. Os valores são convertidos para m/s² e corrigidos pela referência calculada na inicialização.
+O programa aplica uma filtragem às leituras para suavizar variações rápidas e, então, calcula a magnitude resultante da aceleração nos três eixos. Essa magnitude é comparada com dois limites configurados no código:
+- Nível 1: 6,0 m/s²;
+- Nível 2: 16,0 m/s².
+Para evitar que uma única leitura isolada acione o alerta, o programa exige seis amostras consecutivas que atendam ao limite correspondente antes de confirmar a detecção.
+
+4.3. Alerta de nível 1 — vibração moderada
+Quando a magnitude atinge ou ultrapassa 6,0 m/s², por seis amostras consecutivas, o sistema entra no nível 1, desde que o nível 2 não tenha sido confirmado.
+Nesse estado:
+- o LED pisca a 120 BPM (aproximadamente 250 ms por etapa de alternância);
+- o buzzer permanece desligado;
+- o alerta tem duração inicial de 3 segundos e pode ser estendido enquanto a vibração continuar.
+
+4.4. Alerta de nível 2 — vibração intensa
+Quando a magnitude atinge ou ultrapassa 16,0 m/s² por seis amostras consecutivas, o sistema entra no nível 2, que tem prioridade sobre o nível 1.
+Nesse estado:
+- o LED pisca a 180 BPM (aproximadamente 166 ms por etapa de alternância);
+- o buzzer emite uma sirene alternada entre 750 Hz e 1.150 Hz;
+- a alternância da frequência ocorre em intervalos de aproximadamente 350 ms;
+- o alerta tem duração inicial de 5 segundos e pode ser estendido enquanto a vibração intensa continuar.
+
+4.5. Encerramento do alerta
+Quando o período do alerta termina e a magnitude deixa de atender ao limite do nível ativo, o sistema retorna ao estado de monitoramento normal. O LED é apagado e o buzzer emite dois tons curtos, indicando o encerramento do alerta.
+Se a vibração ainda estiver acima do limite quando o período inicial terminar, o programa estende o alerta em intervalos de 1,5 segundo. Assim, a sinalização pode continuar enquanto as condições de movimento persistirem.
+
+5. PROGRAMA E BIBLIOTECAS
+O firmware foi desenvolvido em C++ para o ambiente Arduino, utilizando as bibliotecas:
+- Wire.h: permite a comunicação I²C entre o ESP32 e o MPU6050;
+- MPU6050.h: disponibiliza funções para inicializar o sensor e obter as leituras do acelerômetro.
+O código também utiliza recursos do próprio ambiente Arduino/ESP32, como millis(), tone(), noTone(), pinMode() e digitalWrite(), para controlar os tempos, o buzzer e o LED.
+O Monitor Serial opera a 115200 baud e apresenta periodicamente a magnitude calculada e o estado atual do sistema, auxiliando na observação e nos testes.
+
+6. REFERÊNCIA E ADAPTAÇÕES
+O projeto foi inspirado no tutorial “ESP32 Earthquake Detection System”, publicado no Instructables:
+https://www.instructables.com/ESP32-Earthquake-Detection-System/
+Mas com algumas adaptações devido os componentes usados e o tamanho da nossa protoboard.

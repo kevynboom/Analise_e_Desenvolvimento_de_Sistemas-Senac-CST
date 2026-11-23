@@ -1,0 +1,280 @@
+#include <Wire.h>
+#include <MPU6050.h>
+
+MPU6050 mpu;
+
+const int LED_PIN = 2;
+const int BUZZER_PIN = 5;
+
+const float LOW_THRESHOLD = 6.0f;
+const float HIGH_THRESHOLD = 16.0f;
+
+const unsigned long STARTUP_LED_DURATION = 3000UL;
+const unsigned long LEVEL1_DURATION = 3000UL;
+const unsigned long LEVEL2_DURATION = 5000UL;
+const unsigned long EXTEND_STEP_DURATION = 1500UL;
+
+const unsigned long HALF_PERIOD_120_BPM = 60000UL / 120UL / 2UL; // 250 ms
+const unsigned long HALF_PERIOD_180_BPM = 60000UL / 180UL / 2UL; // 166 ms
+
+const unsigned long AMBULANCE_TONE_MS = 350UL;
+const int AMBULANCE_FREQ_LOW = 750;
+const int AMBULANCE_FREQ_HIGH = 1150;
+const unsigned long SIREN_UPDATE_INTERVAL = 35UL;
+
+const float ALPHA = 0.12f;
+const int REQUIRED_SAMPLES = 6;
+
+enum State {
+  STATE_STARTUP,
+  STATE_IDLE,
+  STATE_LEVEL_1,
+  STATE_LEVEL_2
+};
+
+float base_x = 0.0f;
+float base_y = 0.0f;
+float base_z = 0.0f;
+
+float accel_x_filtered = 0.0f;
+float accel_y_filtered = 0.0f;
+float accel_z_filtered = 0.0f;
+
+int low_streak = 0;
+int high_streak = 0;
+
+State current_state = STATE_STARTUP;
+unsigned long startup_start = 0;
+unsigned long state_until = 0;
+unsigned long last_led_toggle = 0;
+unsigned long last_check = 0;
+unsigned long siren_start = 0;
+unsigned long last_siren_update = 0;
+
+bool startup_chirp_done = false;
+bool startup_chirp_started = false;
+unsigned long startup_chirp_start = 0;
+
+bool exit_chirp_active = false;
+unsigned long exit_chirp_start = 0;
+
+void triggerExitChirp(unsigned long now) {
+  exit_chirp_active = true;
+  exit_chirp_start = now;
+}
+
+bool updateExitChirp(unsigned long now) {
+  if (!exit_chirp_active) return false;
+
+  unsigned long elapsed = now - exit_chirp_start;
+  if (elapsed < 80) {
+    tone(BUZZER_PIN, 2200);
+  } else if (elapsed < 160) {
+    noTone(BUZZER_PIN);
+  } else if (elapsed < 240) {
+    tone(BUZZER_PIN, 2400);
+  } else {
+    noTone(BUZZER_PIN);
+    exit_chirp_active = false;
+  }
+  return exit_chirp_active;
+}
+
+void playStartupChirp(unsigned long now) {
+  if (!startup_chirp_started) {
+    startup_chirp_started = true;
+    startup_chirp_start = now;
+  }
+
+  unsigned long elapsed = now - startup_chirp_start;
+  if (elapsed < 80) {
+    tone(BUZZER_PIN, 2200);
+  } else if (elapsed < 160) {
+    noTone(BUZZER_PIN);
+  } else if (elapsed < 240) {
+    tone(BUZZER_PIN, 2400);
+  } else {
+    noTone(BUZZER_PIN);
+    startup_chirp_done = true;
+  }
+}
+
+int getAmbulanceSirenFreq(unsigned long now) {
+  unsigned long phase = ((now - siren_start) / AMBULANCE_TONE_MS) % 2UL;
+  return (phase == 0) ? AMBULANCE_FREQ_LOW : AMBULANCE_FREQ_HIGH;
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(23, 22);
+
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(LED_PIN, HIGH);
+  digitalWrite(BUZZER_PIN, LOW);
+  noTone(BUZZER_PIN);
+
+  mpu.initialize();
+  mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
+  mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_16);
+
+  if (!mpu.testConnection()) {
+    Serial.println("MPU6050 not found!");
+    while (1);
+  }
+
+  const int samples = 100;
+  long sum_x = 0, sum_y = 0, sum_z = 0;
+  for (int i = 0; i < samples; i++) {
+    int16_t rx, ry, rz;
+    mpu.getAcceleration(&rx, &ry, &rz);
+    sum_x += rx;
+    sum_y += ry;
+    sum_z += rz;
+    delay(10);
+  }
+
+  base_x = ((sum_x / (float)samples) / 2048.0f) * 9.81f;
+  base_y = ((sum_y / (float)samples) / 2048.0f) * 9.81f;
+  base_z = ((sum_z / (float)samples) / 2048.0f) * 9.81f;
+
+  startup_start = millis();
+  current_state = STATE_STARTUP;
+  digitalWrite(LED_PIN, HIGH);
+}
+
+void loop() {
+  unsigned long now = millis();
+
+  int16_t ax_raw, ay_raw, az_raw;
+  mpu.getAcceleration(&ax_raw, &ay_raw, &az_raw);
+
+  float ax = ((ax_raw / 2048.0f) * 9.81f) - base_x;
+  float ay = ((ay_raw / 2048.0f) * 9.81f) - base_y;
+  float az = ((az_raw / 2048.0f) * 9.81f) - base_z;
+
+  accel_x_filtered = ALPHA * ax + (1.0f - ALPHA) * accel_x_filtered;
+  accel_y_filtered = ALPHA * ay + (1.0f - ALPHA) * accel_y_filtered;
+  accel_z_filtered = ALPHA * az + (1.0f - ALPHA) * accel_z_filtered;
+
+  float magnitude = sqrt(accel_x_filtered * accel_x_filtered +
+                         accel_y_filtered * accel_y_filtered +
+                         accel_z_filtered * accel_z_filtered);
+
+  if (current_state == STATE_STARTUP) {
+    if (now - startup_start < STARTUP_LED_DURATION) {
+      digitalWrite(LED_PIN, HIGH);
+      noTone(BUZZER_PIN);
+      delay(1);
+      return;
+    }
+
+    digitalWrite(LED_PIN, LOW);
+    if (!startup_chirp_done) {
+      playStartupChirp(now);
+      delay(1);
+      return;
+    }
+
+    current_state = STATE_IDLE;
+    noTone(BUZZER_PIN);
+    Serial.println("IDLE");
+  }
+
+  if (magnitude >= HIGH_THRESHOLD) {
+    high_streak++;
+    low_streak++;
+  } else if (magnitude >= LOW_THRESHOLD) {
+    low_streak++;
+    high_streak = 0;
+  } else {
+    low_streak = 0;
+    high_streak = 0;
+  }
+
+  if (high_streak >= REQUIRED_SAMPLES) {
+    if (current_state != STATE_LEVEL_2) {
+      exit_chirp_active = false;
+      siren_start = now;
+      last_siren_update = 0;
+      last_led_toggle = now;
+      digitalWrite(LED_PIN, HIGH);
+    }
+    current_state = STATE_LEVEL_2;
+    state_until = now + LEVEL2_DURATION;
+  } else if (low_streak >= REQUIRED_SAMPLES) {
+    if (current_state != STATE_LEVEL_2) {
+      if (current_state != STATE_LEVEL_1) {
+        exit_chirp_active = false;
+        last_led_toggle = now;
+        digitalWrite(LED_PIN, HIGH);
+      }
+      current_state = STATE_LEVEL_1;
+      if (now + LEVEL1_DURATION > state_until) {
+        state_until = now + LEVEL1_DURATION;
+      }
+    }
+  }
+
+  if (current_state != STATE_IDLE && now >= state_until) {
+    bool still_moving = (current_state == STATE_LEVEL_2)
+                          ? (magnitude >= HIGH_THRESHOLD)
+                          : (magnitude >= LOW_THRESHOLD);
+
+    if (still_moving) {
+      state_until = now + EXTEND_STEP_DURATION;
+    } else {
+      current_state = STATE_IDLE;
+      digitalWrite(LED_PIN, LOW);
+      triggerExitChirp(now);
+    }
+  }
+
+  switch (current_state) {
+    case STATE_LEVEL_2: {
+      if (now - last_led_toggle >= HALF_PERIOD_180_BPM) {
+        digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+        last_led_toggle = now;
+      }
+      if (last_siren_update == 0 || (now - last_siren_update >= SIREN_UPDATE_INTERVAL)) {
+        tone(BUZZER_PIN, getAmbulanceSirenFreq(now));
+        last_siren_update = now;
+      }
+      break;
+    }
+
+    case STATE_LEVEL_1: {
+      noTone(BUZZER_PIN);
+      if (now - last_led_toggle >= HALF_PERIOD_120_BPM) {
+        digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+        last_led_toggle = now;
+      }
+      break;
+    }
+
+    case STATE_IDLE:
+    default: {
+      digitalWrite(LED_PIN, LOW);
+      if (!updateExitChirp(now)) {
+        noTone(BUZZER_PIN);
+      }
+      break;
+    }
+  }
+
+  if (now - last_check > 200) {
+    Serial.print("Accel: ");
+    Serial.print(magnitude, 2);
+    Serial.print(" m/s^2 | State: ");
+    if (current_state == STATE_LEVEL_2) {
+      Serial.println("NIVEL 2 (180 BPM + SIRENE AMBULANCIA)");
+    } else if (current_state == STATE_LEVEL_1) {
+      Serial.println("NIVEL 1 (120 BPM)");
+    } else {
+      Serial.println("IDLE");
+    }
+    last_check = now;
+  }
+
+  delay(1);
+}

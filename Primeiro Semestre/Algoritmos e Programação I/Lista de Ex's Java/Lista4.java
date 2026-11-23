@@ -10,7 +10,8 @@ public class Lista4 {
     // 1 - Crie um método que verifica se um array de char possui um determinado valor.
     public static void ex01() {
         System.out.println("---------- EXERCÍCIO 01 ----------");
-        System.out.println("Teste");
+        System.out.println("Lista Pendente");
+        System.out.println("Farei algum dia...");
     }
     
     // 2 - Use o método anterior para preencher um array com valores não repetidos.

@@ -1,7 +1,7 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class Eg11Exercicio {
+public class Eg11RevisaoProva {
     // VÁRIAVEIS GLOBAIS
     // Vetores pararelos para informações
     static int qtdLivros;

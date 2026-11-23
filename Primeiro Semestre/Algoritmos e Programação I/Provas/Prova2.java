@@ -1,7 +1,7 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class Prova2a {
+public class Prova2 {
     // VÁRIAVEIS GLOBAIS
     // Vetores pararelos para informações
     static int qtdJogadores;
@@ -67,7 +67,7 @@ public class Prova2a {
         System.out.printf("%-25s %-10s %-12s %-15s %-15s %-15s\n", "Nome do Jogador", "Idade", "Pontuação", "Partidas", "Vitórias", "Derrotas");
         System.out.println("-------------------------------------------------------------------------------------------");
         for (int i = 0; i < qtdJogadores; i++) {
-            System.out.printf("%-25s %-10d %-12d %-15d %-15d %-15s\n", nomeJogador[i], idadeJogador[i], qtdPontos[i], qtdPartidas[i], qtdVitorias[i], qtdDerrotas[i]);
+            System.out.printf("%-25s %-10d %-12d %-15d %-15d %-15d\n", nomeJogador[i], idadeJogador[i], qtdPontos[i], qtdPartidas[i], qtdVitorias[i], qtdDerrotas[i]);
         }
         
         System.out.println("\n----- LISTAGEM DE TODOS OS JOGADORES CONCLUÍDA -----");
@@ -163,7 +163,7 @@ public class Prova2a {
         System.out.println("-------------------------------------------------------------------------------------------");
         for (int i = 0; i < qtdJogadores; i++) {
             if (qtdPontos[i] > media) {
-                System.out.printf("%-25s %-10d %-12d %-15d %-15d %-15s\n", nomeJogador[i], idadeJogador[i], qtdPontos[i], qtdPartidas[i], qtdVitorias[i], qtdDerrotas[i]);
+                System.out.printf("%-25s %-10d %-12d %-15d %-15d %-15d\n", nomeJogador[i], idadeJogador[i], qtdPontos[i], qtdPartidas[i], qtdVitorias[i], qtdDerrotas[i]);
             }
         }
 
@@ -230,7 +230,7 @@ public class Prova2a {
             if (busca.equalsIgnoreCase(nomeJogador[i])) {
                 System.out.println("Jogador encontrado!\n");
                 System.out.printf("%-25s %-10s %-12s %-15s %-15s %-15s\n", "Nome do Jogador", "Idade", "Pontuação", "Partidas", "Vitórias", "Derrotas");
-                System.out.printf("%-25s %-10d %-12d %-15d %-15d %-15s\n", nomeJogador[i], idadeJogador[i], qtdPontos[i], qtdPartidas[i], qtdVitorias[i], qtdDerrotas[i]);
+                System.out.printf("%-25s %-10d %-12d %-15d %-15d %-15d\n", nomeJogador[i], idadeJogador[i], qtdPontos[i], qtdPartidas[i], qtdVitorias[i], qtdDerrotas[i]);
                 encontrado = true;
                 break;
             } 
