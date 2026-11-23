@@ -36,7 +36,7 @@ public class Eg11Exercicio {
         qtdPaginas = new int[qtdLivros];
         qtdEmprestimos = new int[qtdLivros];
         qtdDevolucoes = new int[qtdLivros];
-        System.out.println("CONFIGURAÇÃO INICIAL CONCLUÍDA! ");
+        System.out.println("----- CONFIGURAÇÃO INICIAL CONCLUÍDA! ----- ");
     }
 
     /**
@@ -60,13 +60,15 @@ public class Eg11Exercicio {
      */
     public static void listarLivros() {
         System.out.println("\n----- INICIANDO LISTAGEM DE TODOS OS LIVROS -----");
-        System.out.printf("%-25s %-10s %-12s %-15s %-15s%n", "Nome do Livro", "Ano", "Páginas", "Empréstimos", "Devoluções");
+
+        System.out.printf("%-25s %-10s %-12s %-15s %-15s\n", "Nome do Livro", "Ano", "Páginas", "Empréstimos", "Devoluções");
         System.out.println("--------------------------------------------------------------------------------");
         for (int i = 0; i < qtdLivros; i++) {
-            System.out.printf("%-25s %-10d %-12d %-15d %-15d%n", nomeLivro[i], anoPublicacao[i], qtdPaginas[i], qtdEmprestimos[i], qtdDevolucoes[i]);
+            System.out.printf("%-25s %-10d %-12d %-15d %-15d\n", nomeLivro[i], anoPublicacao[i], qtdPaginas[i], qtdEmprestimos[i], qtdDevolucoes[i]);
         }
+
         System.out.println("\n----- LISTAGEM DE TODOS OS LIVROS CONCLUÍDA -----");
-        System.out.println("Aperte Enter para continuar...");
+        System.out.println("Aperte Enter para voltar para o menu principal...");
         sc.nextLine();
         sc.nextLine();
     }
@@ -76,6 +78,7 @@ public class Eg11Exercicio {
      */
     public static void livroMaisEmprestado() {
         System.out.println("\n----- INICIANDO VERIFICAÇÃO DO MAIOR EMPRÉSTIMO -----");
+
         String livroMaisEmprestado = nomeLivro[0];
         int qtdE = qtdEmprestimos[0];
         for (int i = 0; i < qtdLivros; i++) {
@@ -85,12 +88,12 @@ public class Eg11Exercicio {
             if (qtdEmprestimos[i] > qtdE) {
                 livroMaisEmprestado = nomeLivro[i];
                 qtdE = qtdEmprestimos[i];
-                
             }
         }
         System.out.printf("\nO livro mais emprestado é o %s com %d empréstimos.\n ", livroMaisEmprestado, qtdE);
+
         System.out.println("\n----- VERIFICAÇÃO DO MAIOR EMPRÉSTIMO CONCLUÍDA -----");
-        System.out.println("Aperte Enter para continuar...");
+        System.out.println("Aperte Enter para voltar para o menu principal...");
         sc.nextLine();
         sc.nextLine();
     }
@@ -100,6 +103,7 @@ public class Eg11Exercicio {
      */
     public static void livroMenosEmprestado() {
         System.out.println("\n----- INICIANDO VERIFICAÇÃO DO MENOR EMPRÉSTIMO -----");
+
         String livroMenosEmprestado = nomeLivro[0];
         int qtdE = qtdEmprestimos[0];
         for (int i = 0; i < qtdLivros; i++) {
@@ -112,31 +116,34 @@ public class Eg11Exercicio {
             }
         }
         System.out.printf("\nO livro menos emprestado é o %s com %d empréstimos.\n ", livroMenosEmprestado, qtdE);
+
         System.out.println("\n----- VERIFICAÇÃO DO MENOR EMPRÉSTIMO CONCLUÍDA -----");
-        System.out.println("Aperte Enter para continuar...");
+        System.out.println("Aperte Enter para voltar para o menu principal...");
         sc.nextLine();
         sc.nextLine();
     }
 
     /**
-     * Função para verificar e informar qual a média do número de empréstimos
+     * Função para verificar e informar qual a média dos empréstimos
      */
     public static void mediaEmprestimos() {
-        System.out.println("\n----- INICIANDO VERIFICAÇÃO DA MÉDIA -----");
+        System.out.println("\n----- INICIANDO VERIFICAÇÃO DA MÉDIA DE EMPRÉSTIMOS -----");
+
         double media = 0;
         for (int i = 0; i < qtdLivros; i++) {
             media += qtdEmprestimos[i];
         }
         media /= qtdLivros;
         System.out.printf("\nA média de empréstimos dos livros é de %.2f empréstimos.\n ", media);
-        System.out.println("\n----- VERIFICAÇÃO DA MÉDIA CONCLUÍDA-----");
-        System.out.println("Aperte Enter para continuar...");
+
+        System.out.println("\n----- VERIFICAÇÃO DA MÉDIA DE EMPRÉSTIMOS CONCLUÍDA-----");
+        System.out.println("Aperte Enter para voltar para o menu principal...");
         sc.nextLine();
         sc.nextLine();
     }
 
     /**
-     * Função para verificar e informar quais livros estão acima da média (visto função anterior)
+     * Função para verificar e informar quais livros estão acima da média
      */
     public static void livrosAcimaDaMediaEmprestimos() {
         System.out.println("\n----- INICIANDO VERIFICAÇÃO DOS LIVROS ACIMA DA MÉDIA -----");
@@ -150,14 +157,14 @@ public class Eg11Exercicio {
         System.out.println("Pressione Enter para iniciar a listagem");
         sc.nextLine();
         sc.nextLine();
-        System.out.printf("%-25s %-10s %-12s %-15s %-15s%n", "Nome do Livro", "Ano", "Páginas", "Empréstimos", "Devoluções");
+        System.out.printf("%-25s %-10s %-12s %-15s %-15s\n", "Nome do Livro", "Ano", "Páginas", "Empréstimos", "Devoluções");
         for (int i = 0; i < qtdLivros; i++) {
             if (qtdEmprestimos[i] > media) {
-                System.out.printf("%-25s %-10d %-12d %-15d %-15d%n", nomeLivro[i], anoPublicacao[i], qtdPaginas[i], qtdEmprestimos[i], qtdDevolucoes[i]);
+                System.out.printf("%-25s %-10d %-12d %-15d %-15d\n", nomeLivro[i], anoPublicacao[i], qtdPaginas[i], qtdEmprestimos[i], qtdDevolucoes[i]);
             }
         }
-        System.out.println("\n----- VERIFICAÇÃO DOS LIVROS ACIMA DA MÉDIA CONCLUÍDA-----");
-        System.out.println("Aperte Enter para continuar...");
+        System.out.println("\n----- VERIFICAÇÃO DOS LIVROS ACIMA DA MÉDIA CONCLUÍDA -----");
+        System.out.println("Aperte Enter para voltar para o menu principal...");
         sc.nextLine();
     }
 
@@ -172,32 +179,34 @@ public class Eg11Exercicio {
      */
     public static void estatisticas() {
         System.out.println("\n----- INICIANDO VERIFICAÇÃO E LISTAGEM DAS ESTATÍSTICAS -----");
-        int maiorP = 0, menorP = 5000, totalE = 0, totalD = 0, qtdLivrosLocal = 0;
+
+        int maiorPublicacao = 0, menorPublicacao = 5000, totalEmprestimos = 0, totalDevolucoes = 0, qtdLivrosLocal = 0;
         double mediaAnos = 0, porcentagem;
         for (int i = 0; i < qtdLivros; i++) {
-            if (anoPublicacao[i] > maiorP) {
-                maiorP = anoPublicacao[i];
-            } else if (anoPublicacao[i] < menorP) {
-                menorP = anoPublicacao[i];
+            if (anoPublicacao[i] > maiorPublicacao) {
+                maiorPublicacao = anoPublicacao[i];
+            } else if (anoPublicacao[i] < menorPublicacao) {
+                menorPublicacao = anoPublicacao[i];
             }
             if (qtdEmprestimos[i] > 100) {
                 qtdLivrosLocal++;
             }
             mediaAnos += anoPublicacao[i];
-            totalE += qtdEmprestimos[i];
-            totalD += qtdDevolucoes[i];
+            totalEmprestimos += qtdEmprestimos[i];
+            totalDevolucoes += qtdDevolucoes[i];
         }
         porcentagem = ((double) qtdLivrosLocal / qtdLivros) * 100; // "(double)" para forçar o Java a fazer uma divisão com decimais com aquele váriavel
         mediaAnos /= qtdLivros;
 
-        System.out.printf("\nPublicação mais antiga:  %d\n", menorP);
-        System.out.printf("Publicação mais recente: %d\n", maiorP);
-        System.out.printf("Média dos anos:          %.2f\n", mediaAnos);
-        System.out.printf("Total de empréstimos:   %d\n", totalE);
-        System.out.printf("Total de devoluções:    %d\n", totalD);
+        System.out.printf("\nPublicação mais antiga: %d\n", menorPublicacao);
+        System.out.printf("Publicação mais recente: %d\n", maiorPublicacao);
+        System.out.printf("Média dos anos: %.2f\n", mediaAnos);
+        System.out.printf("Total de empréstimos: %d\n", totalEmprestimos);
+        System.out.printf("Total de devoluções: %d\n", totalDevolucoes);
         System.out.printf("Livros com mais de 100 empréstimos: %d (%.2f%%)\n", qtdLivrosLocal, porcentagem);
+
         System.out.println("\n----- VERIFICAÇÃO E LISTAGEM DAS ESTATÍSTICAS CONCLUÍDA -----");
-        System.out.println("Aperte Enter para continuar...");
+        System.out.println("Aperte Enter para voltar para o menu principal...");
         sc.nextLine();
         sc.nextLine();
     }
@@ -207,6 +216,7 @@ public class Eg11Exercicio {
      */
     public static void buscarLivroTitulo() {
         System.out.println("\n----- INICIANDO BUSCA DE LIVRO VIA TÍTULO -----");
+
         sc.nextLine();
         boolean encontrado = false;
         System.out.println("\nDigite o nome do livro no qual procura: ");
@@ -214,8 +224,8 @@ public class Eg11Exercicio {
         for (int i = 0; i < qtdLivros; i++) {
             if (busca.equalsIgnoreCase(nomeLivro[i])) {
                 System.out.println("Livro encontrado!\n");
-                System.out.printf("%-25s %-10s %-12s %-15s %-15s%n", "Nome do Livro", "Ano", "Páginas", "Empréstimos", "Devoluções");
-                System.out.printf("%-25s %-10d %-12d %-15d %-15d%n", nomeLivro[i], anoPublicacao[i], qtdPaginas[i], qtdEmprestimos[i], qtdDevolucoes[i]);
+                System.out.printf("%-25s %-10s %-12s %-15s %-15s\n", "Nome do Livro", "Ano", "Páginas", "Empréstimos", "Devoluções");
+                System.out.printf("%-25s %-10d %-12d %-15d %-15d\n", nomeLivro[i], anoPublicacao[i], qtdPaginas[i], qtdEmprestimos[i], qtdDevolucoes[i]);
                 encontrado = true;
                 break;
             } 
@@ -223,8 +233,9 @@ public class Eg11Exercicio {
         if (!encontrado) {
             System.out.println("\nLivro não encontrado...");
         }
+
         System.out.println("\n----- BUSCA DE LIVRO VIA TÍTULO CONCLUÍDA -----");
-        System.out.println("Aperte Enter para continuar...");
+        System.out.println("Aperte Enter para voltar para o menu principal...");
         sc.nextLine();
     }
 
