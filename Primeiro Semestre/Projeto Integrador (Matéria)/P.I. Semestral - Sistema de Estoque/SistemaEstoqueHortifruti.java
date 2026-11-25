@@ -137,12 +137,20 @@ public class SistemaEstoqueHortifruti {
 
         System.out.print("Digite a quantidade disponível deste produto: ");
         quantidade[produtosCadastrados] = sc.nextInt();
-        sc.nextLine(); // Limpando buffer de entrada
+        while (quantidade[produtosCadastrados] < 0) {
+            System.out.print("Quantidade inválida! Digite um valor positivo: ");
+            quantidade[produtosCadastrados] = sc.nextInt();
+        }
+        sc.nextLine(); // Limpando buffer
 
         System.out.print("Digite o preço deste produto: ");
         // Abaixo o "sc.nextLine" recebe dado como tipo String, o "Double.parseDouble" é para converter esse dado para tipo double
         preco[produtosCadastrados] = Double.parseDouble(sc.nextLine().replace(",", ".")); // Permite aceitar tanto "10,50" como "10.50" por exemplo
-
+        while (preco[produtosCadastrados] < 0) {
+            System.out.print("Preço inválido! Digite um valor positivo: ");
+            preco[produtosCadastrados] = Double.parseDouble(sc.nextLine().replace(",", "."));
+        }
+    
         System.out.printf("Produto: %s | Categoria: %s | Quantidade: %d | Preço unitário: R$ %.2f%n",
         produto[produtosCadastrados], categoria[produtosCadastrados], quantidade[produtosCadastrados], preco[produtosCadastrados]);
         produtosCadastrados++;
@@ -255,10 +263,18 @@ public class SistemaEstoqueHortifruti {
             case 3 -> {
                 System.out.print("Digite a nova quantidade: ");
                 quantidade[indice] = sc.nextInt();
+                while (quantidade[indice] < 0) {
+                    System.out.print("Quantidade inválida! Digite um valor positivo: ");
+                    quantidade[indice] = sc.nextInt();
+                }
             }
             case 4 -> {
                 System.out.print("Digite o novo preço: R$ ");
                 preco[indice] = Double.parseDouble(sc.nextLine().replace(",", "."));
+                while (preco[indice] < 0) {
+                    System.out.print("Preço inválido! Digite um valor positivo: ");
+                    preco[indice] = Double.parseDouble(sc.nextLine().replace(",", "."));
+                }
             }
             case 5 -> {
                 System.out.print("Digite o novo nome do produto: ");
@@ -282,10 +298,18 @@ public class SistemaEstoqueHortifruti {
 
                 System.out.print("Digite a nova quantidade: ");
                 quantidade[indice] = sc.nextInt();
+                while (quantidade[indice] < 0) {
+                    System.out.print("Quantidade inválida! Digite um valor positivo: ");
+                    quantidade[indice] = sc.nextInt();
+                }
                 sc.nextLine();
 
                 System.out.print("Digite o novo preço: R$ ");
                 preco[indice] = Double.parseDouble(sc.nextLine().replace(",", "."));
+                while (preco[indice] < 0) {
+                    System.out.print("Preço inválido! Digite um valor positivo: ");
+                    preco[indice] = Double.parseDouble(sc.nextLine().replace(",", "."));
+                }
             }
             case 0 -> {
                 System.out.println("Edição cancelada!");
@@ -487,8 +511,11 @@ public class SistemaEstoqueHortifruti {
         try {
             configuracaoInicial();
         } catch (Exception e) {
-            System.out.println("Ocorreu um erro na configuração inicial: " + e.getMessage());
+            System.out.println("Ocorreu um erro na configuração inicial. " + e.getMessage());
             System.out.println("Utilizando estoque vazio...");
+            if (sc.hasNextLine()) {
+                    sc.nextLine();
+                }
         }
         System.out.println("===== SISTEMA DE ESTOQUE HORTIFRUTI =====");
         int opcao = -1;
