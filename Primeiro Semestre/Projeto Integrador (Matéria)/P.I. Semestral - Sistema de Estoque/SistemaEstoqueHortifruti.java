@@ -484,32 +484,46 @@ public class SistemaEstoqueHortifruti {
 
     // ---------- MÉTODO PRINCIPAL/MENU ----------
     public static void main(String[] args) {
-        configuracaoInicial();
+        try {
+            configuracaoInicial();
+        } catch (Exception e) {
+            System.out.println("Ocorreu um erro na configuração inicial: " + e.getMessage());
+            System.out.println("Utilizando estoque vazio...");
+        }
         System.out.println("===== SISTEMA DE ESTOQUE HORTIFRUTI =====");
-        int opcao;
-        do { 
-            System.out.println("\n---------- MENU ----------");
-            System.out.println("O que deseja fazer agora?");
-            System.out.println(" 1 - Consultar estoque");
-            System.out.println(" 2 - Adicionar um produto");
-            System.out.println(" 3 - Remover um produto");
-            System.out.println(" 4 - Editar um produto");
-            System.out.println(" 5 - Pesquisar por um produto específico");
-            System.out.println(" 6 - Verificar produtos com estoque baixo");
-            System.out.println(" 7 - Calcular valor total do estoque");
-            System.out.println(" 0 - Encerrar");
-            System.out.print("Opção: ");
-            opcao = sc.nextInt();
-            switch (opcao) {
-                case 1 -> consultarEstoque();
-                case 2 -> adicionarProduto();
-                case 3 -> removerProduto();
-                case 4 -> editarProduto();
-                case 5 -> pesquisarProduto();
-                case 6 -> verificarEstoquesBaixos();
-                case 7 -> calcularValorEstoque();
-                case 0 -> System.out.println("Encerrando o programa...");
-                default -> System.out.print("Opção inválida!");
+        int opcao = -1;
+        do {
+            try {
+                System.out.println("\n---------- MENU ----------");
+                System.out.println("O que deseja fazer agora?");
+                System.out.println(" 1 - Consultar estoque");
+                System.out.println(" 2 - Adicionar um produto");
+                System.out.println(" 3 - Remover um produto");
+                System.out.println(" 4 - Editar um produto");
+                System.out.println(" 5 - Pesquisar por um produto específico");
+                System.out.println(" 6 - Verificar produtos com estoque baixo");
+                System.out.println(" 7 - Calcular valor total do estoque");
+                System.out.println(" 0 - Encerrar");
+                System.out.print("Opção: ");
+                opcao = sc.nextInt();
+                switch (opcao) {
+                    case 1 -> consultarEstoque();
+                    case 2 -> adicionarProduto();
+                    case 3 -> removerProduto();
+                    case 4 -> editarProduto();
+                    case 5 -> pesquisarProduto();
+                    case 6 -> verificarEstoquesBaixos();
+                    case 7 -> calcularValorEstoque();
+                    case 0 -> System.out.println("Encerrando o programa...");
+                    default -> System.out.println("Opção inválida!");
+                }
+            } catch (Exception e) {
+                System.out.println("Ocorreu um erro: " + e.getMessage());
+                if (sc.hasNextLine()) {
+                    sc.nextLine();
+                }
+                opcao = -1;
+                System.out.println("Retornando ao menu principal...");
             }
         } while (opcao != 0);
     }
